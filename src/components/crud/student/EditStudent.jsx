@@ -1,6 +1,6 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { students } from "./data.js";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditStudent = () => {
   const [name, setName] = useState("");
@@ -8,16 +8,33 @@ const EditStudent = () => {
   const [ira, setIra] = useState(0);
 
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const student = students[params.id];
-    setName(student.name);
-    setCourse(student.course);
-    setIra(student.ira);
+    axios
+      .get(`http://localhost:3002/estudantes/retrieve/${params.id}`)
+      .then((response) => {
+        const { name, course, ira } = response.data;
+
+        setName(name);
+        setCourse(course);
+        setIra(ira);
+      });
   }, [params.id]);
 
   const handleSubmit = (event) => {
-    alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`);
+    event.preventDefault();
+
+    const updateStudent = { name, course, ira };
+    axios
+      .put(
+        `http://localhost:3002/estudantes/update/${params.id}`,
+        updateStudent
+      )
+      .then((response) => {
+        alert("Estudante atualizado com sucesso!");
+        navigate("/listStudent");
+      });
   };
 
   return (

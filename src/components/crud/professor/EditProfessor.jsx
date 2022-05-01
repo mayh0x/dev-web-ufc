@@ -1,6 +1,6 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { professor } from "./data.js";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditProfessor = () => {
   const [name, setName] = useState("");
@@ -8,16 +8,33 @@ const EditProfessor = () => {
   const [degree, setDegree] = useState("");
 
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const teacher = professor[params.id];
-    setName(teacher.name);
-    setUniversity(teacher.university);
-    setDegree(teacher.degree);
+    axios
+      .get(`http://localhost:3002/professores/retrieve/${params.id}`)
+      .then((response) => {
+        const { name, university, degree } = response.data;
+
+        setName(name);
+        setUniversity(university);
+        setDegree(degree);
+      });
   }, [params.id]);
 
   const handleSubmit = (event) => {
-    alert(`Nome: ${name} \nUniversidade: ${university}\nTitulação: ${degree}`);
+    event.preventDefault();
+
+    const updateProfessor = { name, university, degree };
+    axios
+      .put(
+        `http://localhost:3002/professores/update/${params.id}`,
+        updateProfessor
+      )
+      .then((response) => {
+        alert("Professor atualizado com sucesso!");
+        navigate("/listProfessor");
+      });
   };
 
   return (

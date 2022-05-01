@@ -1,8 +1,16 @@
-import React from "react";
-import { students } from "./data";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import StudentTableRow from "./StudentTableRow";
 
 const ListStudent = () => {
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3002/estudantes/list")
+      .then((response) => setStudents(response.data));
+  }, []);
+
   function generateTable() {
     if (!students) return;
     return students.map((student, i) => {

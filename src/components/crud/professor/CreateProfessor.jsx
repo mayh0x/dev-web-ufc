@@ -1,12 +1,24 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CreateProfessor = () => {
   const [name, setName] = useState("");
   const [university, setUniversity] = useState("");
   const [degree, setDegree] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
-    alert(`Nome: ${name} \nUniversidade: ${university}\nTitulação: ${degree}`);
+    event.preventDefault();
+
+    const createProfessor = { name, university, degree };
+    axios
+      .post(`http://localhost:3002/professores/register`, createProfessor)
+      .then((response) => {
+        alert("Professor criado com sucesso!");
+        navigate("/listProfessor");
+      });
   };
 
   return (

@@ -1,12 +1,24 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CreateStudent = () => {
   const [name, setName] = useState("");
   const [course, setCourse] = useState("");
   const [ira, setIra] = useState(0);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
-    alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`);
+    event.preventDefault();
+
+    const createStudent = { name, course, ira };
+    axios
+      .post(`http://localhost:3002/estudantes/register`, createStudent)
+      .then((response) => {
+        alert("Estudante criado com sucesso!");
+        navigate("/listStudent");
+      });
   };
 
   return (

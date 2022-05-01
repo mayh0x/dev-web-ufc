@@ -1,12 +1,20 @@
-import React from "react";
-import { professor } from "./data";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import ProfessorTableRow from "./ProfessorTableRow";
 
 const ListProfessor = () => {
+  const [professors, setProfessors] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3002/professores/list")
+      .then((response) => setProfessors(response.data));
+  }, []);
+
   function generateTable() {
-    if (!professor) return;
-    return professor.map((professor, i) => {
-      return <ProfessorTableRow professor={professor} key={i} />;
+    if (!professors) return;
+    return professors.map((professors, i) => {
+      return <ProfessorTableRow professor={professors} key={i} />;
     });
   }
 
