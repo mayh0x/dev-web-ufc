@@ -21,6 +21,7 @@ const StudentTableRow = (props) => {
           className="btn btn-danger"
           onClick={() => {
             axios.delete(`http://localhost:3002/estudantes/delete/${_id}`);
+            alert("Estudante apagado com sucesso!");
             window.location.reload();
           }}
         >
