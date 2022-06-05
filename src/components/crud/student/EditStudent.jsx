@@ -1,6 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import StudentService from "../../../services/estudante";
 
 const EditStudent = () => {
   const [name, setName] = useState("");
@@ -11,30 +12,45 @@ const EditStudent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3002/estudantes/retrieve/${params.id}`)
-      .then((response) => {
-        const { name, course, ira } = response.data;
+    // axios
+    //   .get(`http://localhost:3002/estudantes/retrieve/${params.id}`)
+    //   .then((response) => {
+    //     const { name, course, ira } = response.data;
 
-        setName(name);
-        setCourse(course);
-        setIra(ira);
-      });
+    //     setName(name);
+    //     setCourse(course);
+    //     setIra(ira);
+    //   });
+
+    StudentService.searchStudent((student) => {
+      setName(student.name);
+      setCourse(student.course);
+      setIra(student.ira);
+    }, params.id);
   }, [params.id]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const updateStudent = { name, course, ira };
-    axios
-      .put(
-        `http://localhost:3002/estudantes/update/${params.id}`,
-        updateStudent
-      )
-      .then((response) => {
+    // axios
+    //   .put(
+    //     `http://localhost:3002/estudantes/update/${params.id}`,
+    //     updateStudent
+    //   )
+    //   .then((response) => {
+    //     alert("Estudante atualizado com sucesso!");
+    //     navigate("/listStudent");
+    //   });
+
+    StudentService.updateStudent(
+      () => {
         alert("Estudante atualizado com sucesso!");
         navigate("/listStudent");
-      });
+      },
+      params.id,
+      updateStudent
+    );
   };
 
   return (

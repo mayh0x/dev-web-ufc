@@ -1,6 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import StudentService from "../../../services/estudante";
 
 const CreateStudent = () => {
   const [name, setName] = useState("");
@@ -13,12 +14,17 @@ const CreateStudent = () => {
     event.preventDefault();
 
     const createStudent = { name, course, ira };
-    axios
-      .post(`http://localhost:3002/estudantes/register`, createStudent)
-      .then((response) => {
-        alert("Estudante criado com sucesso!");
-        navigate("/listStudent");
-      });
+    // axios
+    //   .post(`http://localhost:3002/estudantes/register`, createStudent)
+    //   .then((response) => {
+    //     alert("Estudante criado com sucesso!");
+    //     navigate("/listStudent");
+    //   });
+
+    StudentService.createStudent(createStudent, () => {
+      alert("Estudante criado com sucesso!");
+      navigate("/listStudent");
+    });
   };
 
   return (

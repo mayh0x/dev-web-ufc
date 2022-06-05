@@ -1,6 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 import React from "react";
 import { Link } from "react-router-dom";
+import ProfessorService from "../../../services/professor";
 
 const ProfessorTableRow = (props) => {
   const { _id, name, university, degree } = props.professor;
@@ -20,9 +21,10 @@ const ProfessorTableRow = (props) => {
         <button
           className="btn btn-danger"
           onClick={() => {
-            axios.delete(`http://localhost:3002/professores/delete/${_id}`);
-            alert("Professor apagado com sucesso!");
-            window.location.reload();
+            // axios.delete(`http://localhost:3002/professores/delete/${_id}`);
+            ProfessorService.deleteProfessor(() => {
+              alert("Professor apagado com sucesso!");
+            }, _id);
           }}
         >
           Apagar

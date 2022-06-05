@@ -1,6 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ProfessorService from "../../../services/professor";
 
 const EditProfessor = () => {
   const [name, setName] = useState("");
@@ -11,30 +12,45 @@ const EditProfessor = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3002/professores/retrieve/${params.id}`)
-      .then((response) => {
-        const { name, university, degree } = response.data;
+    // axios
+    //   .get(`http://localhost:3002/professores/retrieve/${params.id}`)
+    //   .then((response) => {
+    //     const { name, university, degree } = response.data;
 
-        setName(name);
-        setUniversity(university);
-        setDegree(degree);
-      });
+    //     setName(name);
+    //     setUniversity(university);
+    //     setDegree(degree);
+    //   });
+
+    ProfessorService.searchProfessor((professor) => {
+      setName(professor.name);
+      setUniversity(professor.university);
+      setDegree(professor.degree);
+    }, params.id);
   }, [params.id]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const updateProfessor = { name, university, degree };
-    axios
-      .put(
-        `http://localhost:3002/professores/update/${params.id}`,
-        updateProfessor
-      )
-      .then((response) => {
+    // axios
+    //   .put(
+    //     `http://localhost:3002/professores/update/${params.id}`,
+    //     updateProfessor
+    //   )
+    //   .then((response) => {
+    //     alert("Professor atualizado com sucesso!");
+    //     navigate("/listProfessor");
+    //   });
+
+    ProfessorService.updateProfessor(
+      () => {
         alert("Professor atualizado com sucesso!");
         navigate("/listProfessor");
-      });
+      },
+      params.id,
+      updateProfessor
+    );
   };
 
   return (

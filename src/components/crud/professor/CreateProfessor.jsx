@@ -1,6 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ProfessorService from "../../../services/professor";
 
 const CreateProfessor = () => {
   const [name, setName] = useState("");
@@ -13,12 +14,17 @@ const CreateProfessor = () => {
     event.preventDefault();
 
     const createProfessor = { name, university, degree };
-    axios
-      .post(`http://localhost:3002/professores/register`, createProfessor)
-      .then((response) => {
-        alert("Professor criado com sucesso!");
-        navigate("/listProfessor");
-      });
+    // axios
+    //   .post(`http://localhost:3002/professores/register`, createProfessor)
+    //   .then((response) => {
+    //     alert("Professor criado com sucesso!");
+    //     navigate("/listProfessor");
+    //   });
+
+    ProfessorService.createProfessor(createProfessor, () => {
+      alert("Professor criado com sucesso!");
+      navigate("/listProfessor");
+    });
   };
 
   return (

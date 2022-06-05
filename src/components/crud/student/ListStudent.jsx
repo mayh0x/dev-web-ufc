@@ -1,14 +1,17 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useEffect, useState } from "react";
+import StudentService from "../../../services/estudante";
 import StudentTableRow from "./StudentTableRow";
 
 const ListStudent = () => {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3002/estudantes/list")
-      .then((response) => setStudents(response.data));
+    // axios
+    //   .get("http://localhost:3002/estudantes/list")
+    //   .then((response) => setStudents(response.data));
+
+    StudentService.getStudents(setStudents);
   }, []);
 
   function generateTable() {
