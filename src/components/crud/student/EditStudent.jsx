@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import StudentService from "../../../services/estudante";
+import { Toaster, toast } from "react-hot-toast";
 
 const EditStudent = () => {
   const [name, setName] = useState("");
@@ -29,32 +30,32 @@ const EditStudent = () => {
     }, params.id);
   }, [params.id]);
 
+  const showToast = () => toast.error("PREENCHA TODOS OS CAMPOS.");
+  const successToast = (name) =>
+    toast.success("Estudante " + name + " atualizado com sucesso");
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const updateStudent = { name, course, ira };
-    // axios
-    //   .put(
-    //     `http://localhost:3002/estudantes/update/${params.id}`,
-    //     updateStudent
-    //   )
-    //   .then((response) => {
-    //     alert("Estudante atualizado com sucesso!");
-    //     navigate("/listStudent");
-    //   });
+    if ((name !== "") & (course !== "") & (ira !== 0)) {
+      const updatedStudent = { name, course, ira };
 
-    StudentService.updateStudent(
-      () => {
-        alert("Estudante atualizado com sucesso!");
-        navigate("/listStudent");
-      },
-      params.id,
-      updateStudent
-    );
+      StudentService.updateStudent(
+        () => {
+          successToast(name);
+          navigate("/listStudent");
+        },
+        params.id,
+        updatedStudent
+      );
+    } else {
+      showToast();
+    }
   };
 
   return (
     <div>
+      <Toaster />
       <h2>Editar estudante</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

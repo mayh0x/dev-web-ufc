@@ -1,9 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
-import Home from "./components/Home";
+import Login from "./components/Login";
 import About from "./components/About";
 import CreateStudent from "./components/crud/student/CreateStudent";
 import ListStudent from "./components/crud/student/ListStudent";
@@ -11,10 +10,17 @@ import EditStudent from "./components/crud/student/EditStudent";
 import CreateProfessor from "./components/crud/professor/CreateProfessor";
 import ListProfessor from "./components/crud/professor/ListProfessor";
 import EditProfessor from "./components/crud/professor/EditProfessor";
+import { LoginRoutes, PrivateRoutes } from "./routes";
+import { useAuth } from "./context/AuthenticationContext";
+import { TailSpin } from "react-loader-spinner";
+
 // import Page1 from "./components/Page1";
 // import Page2 from "./components/Page2";
 
 export default function App() {
+  const [loading, setLoading] = useState(false);
+  const { signed, handleLogout } = useAuth();
+
   return (
     <div className="container">
       <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -25,7 +31,7 @@ export default function App() {
           <ul className="navbar-nav mr-auto">
             <li className="navitem">
               <Link to={"/"} className="nav-link">
-                Home
+                Login
               </Link>
             </li>
             <li className="navitem">
@@ -35,7 +41,7 @@ export default function App() {
             </li>
             <li className="nav-item dropdown">
               <a
-                class="nav-link dropdown-toggle"
+                className="nav-link dropdown-toggle"
                 href="#"
                 id="navbarDropdown"
                 role="button"
@@ -46,20 +52,23 @@ export default function App() {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a className="dropdown-item" href="/createStudent">
+                  <Link to="/createStudent" className="dropdown-item">
+                    Create Student
+                  </Link>
+                  {/* <a className="dropdown-item" href="/createStudent">
                     Criar estudante
-                  </a>
+                  </a> */}
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/listStudent">
+                  <Link className="dropdown-item" to="/listStudent">
                     Listar estudantes
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>
             <li className="nav-item dropdown">
               <a
-                class="nav-link dropdown-toggle"
+                className="nav-link dropdown-toggle"
                 href="#"
                 id="navbarDropdown"
                 role="button"
@@ -70,30 +79,74 @@ export default function App() {
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a className="dropdown-item" href="/createProfessor">
+                  <Link className="dropdown-item" to="/createProfessor">
                     Criar professor
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/listProfessor">
+                  <Link className="dropdown-item" to="/listProfessor">
                     Listar professores
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>
           </ul>
         </div>
+
+        {signed && (
+          <div style={{ color: "#fff" }}>
+            Olá,{" "}
+            {JSON.parse(sessionStorage.getItem("@AuthFirebase:user")).email}
+            {loading ? (
+              <TailSpin color="#00BFFF" height={50} width={50} />
+            ) : (
+              <button
+                style={{ marginLeft: 20, marginRight: 20 }}
+                className="btn btn-danger"
+                onClick={() => {
+                  setLoading(true);
+                  handleLogout();
+                }}
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        )}
       </nav>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/createStudent" element={<CreateStudent />} />
-        <Route path="/listStudent" element={<ListStudent />} />
-        <Route path="/editStudent/:id" element={<EditStudent />} />
-        <Route path="/createProfessor" element={<CreateProfessor />} />
-        <Route path="/listProfessor" element={<ListProfessor />} />
-        <Route path="/editProfessor/:id" element={<EditProfessor />} />
+        <Route path="/" element={<LoginRoutes />}>
+          <Route path="/" element={<Login />} />
+        </Route>
+
+        <Route path="/about" element={<PrivateRoutes />}>
+          <Route path="/about" element={<About />} />
+        </Route>
+
+        <Route path="/createStudent" element={<PrivateRoutes />}>
+          <Route path="/createStudent" element={<CreateStudent />} />
+        </Route>
+
+        <Route path="/listStudent" element={<PrivateRoutes />}>
+          <Route path="/listStudent" element={<ListStudent />} />
+        </Route>
+
+        <Route path="/editStudent/:id" element={<PrivateRoutes />}>
+          <Route path="/editStudent/:id" element={<EditStudent />} />
+        </Route>
+
+        <Route path="/createProfessor" element={<PrivateRoutes />}>
+          <Route path="/createProfessor" element={<CreateProfessor />} />
+        </Route>
+
+        <Route path="/listProfessor" element={<PrivateRoutes />}>
+          <Route path="/listProfessor" element={<ListProfessor />} />
+        </Route>
+
+        <Route path="/editProfessor/:id" element={<PrivateRoutes />}>
+          <Route path="/editProfessor/:id" element={<EditProfessor />} />
+        </Route>
       </Routes>
     </div>
   );

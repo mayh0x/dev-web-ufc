@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProfessorService from "../../../services/professor";
+import { Toaster, toast } from "react-hot-toast";
 
 const EditProfessor = () => {
   const [name, setName] = useState("");
@@ -29,32 +30,32 @@ const EditProfessor = () => {
     }, params.id);
   }, [params.id]);
 
+  const showToast = () => toast.error("PREENCHA TODOS OS CAMPOS.");
+  const successToast = (name) =>
+    toast.success("Professor " + name + " atualizado com sucesso");
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const updateProfessor = { name, university, degree };
-    // axios
-    //   .put(
-    //     `http://localhost:3002/professores/update/${params.id}`,
-    //     updateProfessor
-    //   )
-    //   .then((response) => {
-    //     alert("Professor atualizado com sucesso!");
-    //     navigate("/listProfessor");
-    //   });
+    if ((name !== "") & (university !== "") & (degree !== "")) {
+      const updatedProfessor = { name, university, degree };
 
-    ProfessorService.updateProfessor(
-      () => {
-        alert("Professor atualizado com sucesso!");
-        navigate("/listProfessor");
-      },
-      params.id,
-      updateProfessor
-    );
+      ProfessorService.updateProfessor(
+        () => {
+          successToast(name);
+          navigate("/listProfessor");
+        },
+        params.id,
+        updatedProfessor
+      );
+    } else {
+      showToast();
+    }
   };
 
   return (
     <div>
+      <Toaster />
       <h2>Editar professor</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

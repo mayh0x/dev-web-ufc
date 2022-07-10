@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentService from "../../../services/estudante";
+import { Toaster, toast } from "react-hot-toast";
 
 const CreateStudent = () => {
   const [name, setName] = useState("");
@@ -10,25 +11,26 @@ const CreateStudent = () => {
 
   const navigate = useNavigate();
 
+  const showToast = () => toast.error("PREENCHA TODOS OS CAMPOS.");
+  const successToast = (name) =>
+    toast.success("Estudante " + name + " criado com sucesso");
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const createStudent = { name, course, ira };
-    // axios
-    //   .post(`http://localhost:3002/estudantes/register`, createStudent)
-    //   .then((response) => {
-    //     alert("Estudante criado com sucesso!");
-    //     navigate("/listStudent");
-    //   });
-
-    StudentService.createStudent(createStudent, () => {
-      alert("Estudante criado com sucesso!");
-      navigate("/listStudent");
-    });
+    if ((name !== "") & (course !== "") & (ira !== 0)) {
+      const newStudent = { name, course, ira };
+      StudentService.createStudent(newStudent, () => {
+        successToast(name);
+        navigate("/listStudent");
+      });
+    } else {
+      showToast();
+    }
   };
-
   return (
     <div>
+      <Toaster />
       <h2>Criar estudante</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

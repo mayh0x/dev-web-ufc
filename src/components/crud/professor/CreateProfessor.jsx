@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProfessorService from "../../../services/professor";
+import { Toaster, toast } from "react-hot-toast";
 
 const CreateProfessor = () => {
   const [name, setName] = useState("");
@@ -10,25 +11,27 @@ const CreateProfessor = () => {
 
   const navigate = useNavigate();
 
+  const showToast = () => toast.error("PREENCHA TODOS OS CAMPOS.");
+  const successToast = (name) =>
+    toast.success("Professor " + name + " criado com sucesso");
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const createProfessor = { name, university, degree };
-    // axios
-    //   .post(`http://localhost:3002/professores/register`, createProfessor)
-    //   .then((response) => {
-    //     alert("Professor criado com sucesso!");
-    //     navigate("/listProfessor");
-    //   });
-
-    ProfessorService.createProfessor(createProfessor, () => {
-      alert("Professor criado com sucesso!");
-      navigate("/listProfessor");
-    });
+    if ((name !== "") & (university !== "") & (degree !== "")) {
+      const newProfessor = { name, university, degree };
+      ProfessorService.createProfessor(newProfessor, () => {
+        successToast(name);
+        navigate("/listProfessor");
+      });
+    } else {
+      showToast();
+    }
   };
 
   return (
     <div>
+      <Toaster />
       <h2>Criar professor</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
